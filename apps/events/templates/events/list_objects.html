@@ -1,0 +1,19 @@
+{% load pagination_ttags %}
+
+{% for event in objects %}
+    <div class="block-event">
+        <div class="block-text" href="{{ event.get_absolute_url }}">
+            <b>{{ event.title }}</b><br/>
+{#            {% if forloop.first or forloop.last %}#}
+{#                {{ event.short_text|truncatechars:290 }}#}
+{#            {% else %}#}
+                {{ event.short_text|truncatechars:180 }}
+{#            {% endif %}#}
+        </div>
+
+    </div>
+    {% if forloop.first %}
+        <div class="clearing"></div>
+    {% endif %}
+{% endfor %}
+{% show_pagination %}

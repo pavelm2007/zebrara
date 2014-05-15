@@ -1,0 +1,8 @@
+{% if is_paginated %}
+    {% if page_obj.has_next %}
+        <div class="block-url-next-event">
+            <div class="url-next-event" href="{% url 'events:index' %}?page={{ page_obj.next_page_number }}{{ getvars }}">Узнать
+                больше</div>
+        </div>
+    {% endif %}
+{% endif %}

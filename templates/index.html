@@ -1,0 +1,532 @@
+{#<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">#}
+{#<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">#}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>{% block title %}{{ cp_seo.meta_title }}Рекламное агентство "Зебра"{% endblock %}</title>
+    {#    <link rel="shortcut icon" type="image/x-icon" href="http://zebrara.ru/static/zebrara/image/favicon.ico" />#}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="{{ cp_seo.meta_description }}"/>
+    <meta name="keywords" content="{{ cp_seo.meta_keywords }}"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}zebrara/font/intro.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}zebrara/css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}zebrara/js/arcticmodal/jquery.arcticmodal-0.3.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}zebrara/js/arcticmodal/themes/simple.css" type="text/css"/>
+    <script type="text/javascript" src="{{ STATIC_URL }}zebrara/js/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}zebrara/js/arcticmodal/jquery.arcticmodal-0.3.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}zebrara/js/jquery.form.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}zebrara/js/project.js"></script>
+    <script src="http://api-maps.yandex.ru/2.1-dev/?lang=ru-RU&load=package.full" type="text/javascript"></script>
+    {{ cp_config_Script.in_head }}
+    <script type="text/javascript">
+        ymaps.ready(function () {
+            var myMap = new ymaps.Map('block-map', {
+                        center: [56.084036, 63.628160],
+                        zoom: 14,
+                        controls: ['zoomControl']
+                    }),
+                    myPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+                        hintContent: 'Собственный значок метки'
+                    }, {
+                        // Опции.
+                        // Необходимо указать данный тип макета.
+                        iconLayout: 'default#image',
+                        // Своё изображение иконки метки.
+                        iconImageHref: '{{ STATIC_URL }}zebrara/images/Z_label.png',
+                        // Размеры метки.
+                        iconImageSize: [30, 42],
+                        // Смещение левого верхнего угла иконки относительно
+                        // её "ножки" (точки привязки).
+                        iconImageOffset: [-3, -42]
+                    });
+
+            myMap.geoObjects.add(myPlacemark);
+        });
+    </script>
+
+</head>
+{% load thumbnail common_tags pagination_ttags flatcontent_tags %}
+<body>
+{{ cp_config_Script.after_body|safe }}
+<div id="page">
+<div id="head">
+    <div id="head-content">
+        <div id="logo"><a href="/"><img src="{{ STATIC_URL }}zebrara/images/logo.png"/></a></div>
+        <div id="block-head-right">
+            <div id="main-menu">
+                <ul>
+                    <li><a href="#anchor1">События</a></li>
+                    <li><a href="#anchor2">Работы</a></li>
+                    <li><a href="#anchor3">Контакты</a></li>
+                    <li class="last">
+                        <a href="/" id="menu_service_link">Услуги</a>
+                        <ul>
+                            {% for service in service_list %}
+                                <li><a href="#service_anchor{{ forloop.counter }}">{{ service.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="clearing"></div>
+    </div>
+</div>
+<div class="block-image" id="logo-img">
+    <div class="block-image-image" id="block-zebra"></div>
+    {#    <div class="block-image-top"></div>#}
+    {#    <div class="block-image-bottom"></div>#}
+</div>
+<div class="block-content">
+    <div class="block-content-text event" id="anchor1">
+        <div class="block-title">
+            <div>События</div>
+        </div>
+        <div class="block-event-slogan">
+            {% flatcontent event_slogan %}
+        </div>
+        <div class="clearing"></div>
+        {% for event in event_list_little %}
+            <div class="block-event">
+                <div class="block-text" href="{{ event.get_absolute_url }}">
+                    <b>{{ event.title }}</b><br/>
+                    {{ event.short_text|truncatechars:180 }}
+                </div>
+            </div>
+        {% endfor %}
+        {% for event in event_list %}
+            <div class="block-event">
+                <div class="block-text" href="{{ event.get_absolute_url }}">
+                    <b>{{ event.title }}</b><br/>
+                    {{ event.short_text|truncatechars:180 }}
+                </div>
+            </div>
+            {% if forloop.first %}
+                <div class="clearing"></div>
+            {% endif %}
+        {% endfor %}
+        {#        <div class="clearing"></div>#}
+        {% show_pagination %}
+    </div>
+    <div class="clearing"></div>
+</div>
+<!--
+<div class="block-content">
+    <div class="block-content-text event" id="anchor1">
+        {% for event in event_list_little %}
+            {% if forloop.first %}
+                <div class="block-title">
+                    <div>События</div>
+                </div>
+            {% endif %}
+            <div class="block-event  {% if forloop.first %}block-first{% elif forloop.counter|divisibleby:'3' %}
+    block-free{% endif %}">
+                <div class="block-text" href="{{ event.get_absolute_url }}">
+                    <b>{{ event.title }}</b><br/>
+                    {% if forloop.first %}
+                    {% endif %}
+                    {% if forloop.first %}
+                        {{ event.short_text|truncatechars:255 }}
+                    {% else %}
+                        {{ event.short_text|truncatechars:510 }}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        {% for event in event_list %}
+            <div class="block-event">
+                <div class="block-text" href="{{ event.get_absolute_url }}">
+                    <b>{{ event.title }}</b><br/>
+                    {#                        {% if forloop.first or forloop.last %}#}
+                    {#                            {{ event.short_text|truncatechars:290 }}#}
+                    {#                        {% else %}#}
+                    {{ event.short_text|truncatechars:510 }}
+                    {#                        {% endif %}#}
+                </div>
+            </div>
+            {% if forloop.first %}
+                <div class="clearing"></div>
+            {% endif %}
+        {% endfor %}
+        {#        <div class="clearing"></div>#}
+        {% show_pagination %}
+    </div>
+    <div class="clearing"></div>
+</div>
+-->
+{#</div>#}
+<br/>
+
+<div class="block-content-no-border">
+    <div class="block-content-text" id="anchor2">
+        <div class="block-work-title">
+            <div class="block-title">
+                <div>Работы</div>
+            </div>
+        </div>
+        <div class="block-work-slogan">
+            {% flatcontent work_slogan %}
+        </div>
+        <div class="clearing"></div>
+        <div class="block-works">
+            {% for work in work_list_little %}
+                <div class="block-work-item" href="{{ work.get_absolute_url }}">
+                    {% thumbnail work.image '293x293' crop='center' as im %}
+                        <img src="{{ im.url }}" alt="{{ work.title }}" height="{{ im.height }}"
+                             width="{{ im.width }}"/>
+                    {% endthumbnail %}
+                    <div class="block-work-description">
+                        <p>{{ work.name }}</p>
+                        <hr/>
+                        <p>{{ work.short_text }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for work in work_list %}
+                <div class="block-work-item" href="{{ work.get_absolute_url }}">
+                    {% thumbnail work.image '293x293' crop='center' as im %}
+                        <img src="{{ im.url }}" alt="{{ work.title }}" height="{{ im.height }}"
+                             width="{{ im.width }}"/>
+                    {% endthumbnail %}
+                    <div class="block-work-description">
+                        <p>{{ work.name }}</p>
+                        <hr/>
+                        <p>{{ work.short_text }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            {% show_work_pagination %}
+        </div>
+
+    </div>
+    <div class="clearing"></div>
+</div>
+<br/>
+
+{% for service in service_list %}
+    {% if service.image %}
+        <div class="block-image">
+            <div class="anchor" id="service_anchor{{ forloop.counter }}"></div>
+            <div class="block-image-image"
+                 style="background: url('{{ MEDIA_URL }}{{ service.image }}') repeat-x center top;">
+                {#            <img src="{{ MEDIA_URL }}{{ service.image }}" />#}
+            </div>
+            <div class="block-image-top"></div>
+            <div class="block-image-bottom"></div>
+        </div>
+        <br/>
+
+    {% endif %}
+    <div class="block-content-no-border"
+            {% if not service.image %}
+         style="border-top: 1px solid #000000;"
+            {% endif %} >
+        <div class="block-content-text" {% if not service.image %}id="service_anchor{{ forloop.counter }}"{% endif %}>
+            <div class="block-left-300">
+                <div class="block-title block-title-small">
+                    <div>{{ service.name }}</div>
+                </div>
+            </div>
+            <div class="block-content-right">
+                <p class="title-conext">{{ service.short_text }}</p>
+                {{ service.text|safe }}
+            </div>
+
+
+            <div class="clearing"></div>
+            <div class="example-block-works">
+                <div class="block-works">
+
+                </div>
+            </div>
+
+            {% if service.has_example %}
+                <div class="read-more"><span url="{{ service.get_example_list_url }}"
+                                             class="service-read-more-link"> Посмотреть примеры</span>
+                </div>
+
+            {% endif %}
+            <div class="clearing"></div>
+        </div>
+    </div>
+    <br/>
+{% endfor %}
+
+
+<div class="block-image">
+    <div class="anchor" id="anchor3"></div>
+    <div class="block-image-image" id="block-map">
+    </div>
+    <div class="block-image-top"></div>
+    <div class="block-image-bottom"></div>
+</div>
+<br/>
+
+<div class="block-content-no-border">
+    <div class="block-content-text">
+        <div class="block-left-300">
+            <div class="block-title">
+                <div>Контакты</div>
+            </div>
+        </div>
+        <div class="block-content-right contact">
+            <p class="title-conext">{{ contact_text.content|striptags|safe }}</p>
+
+            {#            <div style="font-weight: bold;">Рекламное агентсво «ЗЕБРА»</div>#}
+            {% flatcontent contact_address %}
+            {#            <div>Курганская область</div>#}
+            {#            <div>город Шадринск</div>#}
+            {#            <div>улица Февральская, дом 50</div>#}
+            {#            <div>телефон: +7 (35253) 9-00-29</div>#}
+            {#            <div>e-mail: info@zebrara.ru</div>#}
+            <br/>
+
+            <div id="block-form-contact">
+                <form action="{% url 'feedback:index' %}" method="post" id="feedback">
+                    {% csrf_token %}
+                    <div class="title-form">Обратная связь</div>
+                    <table cellpadding="5" cellspasing="0" border="0">
+                        <tr>
+                            <td>{{ form.name.label_tag }} * <br/>{{ form.name }}</td>
+                            <td>{{ form.phone.label_tag }} <br/> {{ form.phone }}</td>
+                            <td>{{ form.email.label_tag }} * <br/>{{ form.email }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">{{ form.title.label_tag }} <sup> </sup><br/>
+                                {{ form.title }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">{{ form.comment.label_tag }} *<br/>{{ form.comment }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" align="right">
+                                <input type="submit" value=" Отправить "/>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="clearing"></div>
+    </div>
+</div>
+<br/>
+
+<div id="footer">
+    <div id="footer-content">
+        <div id="footer-left">
+            &copy; 2013. Все права защищены.
+        </div>
+        <div id="footer-right">
+            <a href="/"><img src="{{ STATIC_URL }}zebrara/images/footer-logo.jpg"/></a>
+        </div>
+        <div class="clearing"></div>
+    </div>
+</div>
+</div>
+<div class="g-hidden" style="display: none;">
+    <div class="box-modal" id="single-modal"/>
+</div>
+<script type="text/javascript">
+    var h_hght = 40; // высота шапки
+    var h_mrg = 0;     // отступ когда шапка уже не видна
+    $(function () {
+        $(window).scroll(function () {
+            var top = $(this).scrollTop();
+            var elem = $('#head');
+            if (top + h_mrg < h_hght) {
+                elem.css('top', (h_hght - top));
+            } else {
+                elem.css('top', h_mrg);
+            }
+        });
+    });
+
+
+    function showRequest(formData, jqForm, options) {
+        return true;
+    }
+
+    function showResponse(responseText, statusText, xhr, $form) {
+        if (responseText['status'] == true) {
+            var t = 'Сообщение успешно отправлено. Спасибо за обращение.';
+            var modal = $('#single-modal');
+            modal.html(
+                    '<div class="box-modal_close arcticmodal-close">' +
+                            '<img src="' + {{ STATIC_URL }} +'zebrara/images/close-window.png" /></div>' +
+                            t);
+            modal.arcticmodal();
+
+            {#            alert('Сообщение успешно отправлено. Спасибо за обращение.')#}
+        }
+        if (responseText['status'] == false) {
+            var t = 'Во время отправки формы произошла ошибка. Проверте правильность заполения полей формы.'
+            var modal = $('#single-modal');
+            modal.html(
+                    '<div class="box-modal_close arcticmodal-close">' +
+                            '<img src="' + {{ STATIC_URL }} +'zebrara/images/close-window.png" /></div>' +
+                            t);
+            modal.arcticmodal();
+        }
+    }
+
+
+    (function ($) {
+        $(document).ready(function () {
+            $('a[href*=#]').bind("click", function (e) {
+                var anchor = $(this);
+                $('html, body').stop().animate({
+                    scrollTop: $(anchor.attr('href')).offset().top - 60
+                }, 700);
+                e.preventDefault();
+            });
+            $('a#show-all-pol').click(function () {
+                $(".block-dop-polezno").slideToggle();
+                return false;
+            });
+
+            $(".read-more").on('click', function () {
+                var url = $(this).children('.service-read-more-link').attr('url');
+                var parent = $(this).parent();
+                var target = parent.find('.block-works');
+
+                var jqxhr = $.ajax(url)
+                        .done(function (data) {
+                            target.append(data.template);
+                            parent.find('.read-more').remove();
+                            {#                        work_hover();#}
+
+                        })
+                        .fail(function () {
+                            alert("error");
+                        });
+
+
+            });
+
+            $(".modal-window").click(function () {
+                var href = $(this).attr("href");
+                $("#modal-window-content-text").load(href);
+                var pWidth = ($('#page').width() > $(window).width()) ? $('#page').width() : $(window).width();
+                var pHeight = ($('#page').height() > $(window).height()) ? $('#page').height() : $(window).height();
+                $("#canvas-modal-window").css({
+                    width: pWidth,
+                    height: pHeight
+                }).show();
+                $("#modal-window-content").css({
+                    width: '900px',
+                    height: '585px',
+                    left: ($(window).width() - $("#modal-window-content").width()) / 2 + 'px',
+                    top: ($(window).height() - 585) / 2 + $(window).scrollTop() + 'px'
+                }).show();
+                return false;
+            });
+            $("#modal-windows-content-close").click(function () {
+                $("#canvas-modal-window").fadeOut(300);
+            });
+
+            var options = {
+                clearForm: true,
+                beforeSubmit: showRequest,  // pre-submit callback
+                success: showResponse,  // post-submit callback
+                dataType: 'json'        // 'xml', 'script', or 'json' (expected server response type)
+            };
+            $('#feedback').submit(function () {
+                $(this).ajaxSubmit(options);
+                return false;
+            });
+
+            $(document).on('click', '.block-work-item > *', function () {
+                var url = $(this).parent().attr('href');
+                $.arcticmodal({
+                    type: 'ajax',
+                    url: url,
+                    ajax: {
+                        cache: false,
+                        dataType: 'json',
+                        success: function (data, el, response) {
+                            var h = $('<div class="box-modal">' +
+                                    '<div class="box-modal_close arcticmodal-close">' +
+                                    '<img src="' + {{ STATIC_URL }} +'zebrara/images/close-window.png" /></div>' +
+                                    response.template +
+                                    '</div>'
+                            );
+                            data.body.html(h);
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '.block-text', function () {
+                var url = $(this).attr('href');
+                $.arcticmodal({
+                    type: 'ajax',
+                    url: url,
+                    ajax: {
+                        cache: false,
+                        dataType: 'json',
+                        success: function (data, el, response) {
+                            var h = $('<div class="box-modal">' +
+                                    '<div class="box-modal_close arcticmodal-close">' +
+                                    '<img src="' + {{ STATIC_URL }} +'zebrara/images/close-window.png" /></div>' +
+                                    response.template +
+                                    '</div>'
+                            );
+                            data.body.html(h);
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '#menu_service_link', function (event) {
+                event.preventDefault();
+            });
+            $(document).on('click', '.url-next-event', function (event) {
+                {#            $('.url-next-event').on('click', function (e) {#}
+                event.preventDefault();
+                var url = $(this).attr('href');
+                var pagination = $(this);
+                var container = $(this).closest(".block-url-next-event");
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    success: function (data) {
+                        $('.block-content-text.event').append(data['template']);
+                        container.remove();
+                    }
+                });
+                return false;
+            });
+{#            $(document).find('div.url-work-next').off('click').on('click', function (event) {#}
+            $(document).on('click', 'div.url-work-next', function (event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                var container = $(this).closest(".work-link-paginator");
+                {#            work_hover();#}
+                $.ajax({
+                    url: url,
+                    success: function (data, el, response) {
+                        $('.work-link-paginator').hide();
+                        $('.work-link-paginator').before(data['template']);
+                        container.remove();
+                        {#                    work_hover();#}
+                    }
+                });
+                {#            work_hover();#}
+
+                return false;
+            });
+            $(document).on('mouseenter', '.block-work-item',function () {
+                $(this).find('.block-work-description').fadeIn(100);
+                $(this).find("img").fadeOut(100);
+            }).on('mouseleave', '.block-work-item', function () {
+                        $(this).find('.block-work-description').fadeOut(100);
+                        $(this).find("img").fadeIn(100);
+                    });
+        });
+    }(jQuery));
+</script>
+{{ cp_config_Script.before_body|safe }}
+</body>
+</html>

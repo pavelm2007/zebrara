@@ -1,0 +1,11 @@
+{% load thumbnail %}
+<div class="block-works">
+    {% for example in object_list %}
+        {% for ex in example.get_images %}
+        {% thumbnail ex.image '270x270' crop='center' as im %}
+            <img src="{{ im.url }}" alt="{{ work.title }}" height="{{ im.height }}"
+                 width="{{ im.width }}"/>
+        {% endthumbnail %}
+        {% endfor %}
+    {% endfor %}
+</div>

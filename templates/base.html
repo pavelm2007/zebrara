@@ -1,0 +1,218 @@
+{% load staticfiles %}
+{% load thumbnail %}
+{% load common_tags %}
+{#{% load static from staticfiles %}#}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{% block title %}Рекламное агентство "Зебра"{% endblock title %}</title>
+    <meta name="author" content="Zebra"/>
+    <meta name="description" content="{% block description %}{% endblock description %}"/>
+    <meta name="keywords" content="{% block keywords %}{% endblock keywords %}"/>
+    <meta name="Resource-type" content="Document"/>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}"/>
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/project.css' %}"/>
+    {% block extra_css %}{% endblock extra_css %}
+    <!--[if IE]>
+		<script type="text/javascript">
+			 var console = { log: function() {} };
+		</script>
+	<![endif]-->
+
+
+</head>
+<body>
+
+<section id="menu" class="navbar-fixed-top">
+    <div class="container">
+        <nav class="navbar navbar-default" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">ZEBRA</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">События</a></li>
+                    <li><a href="#">Работы</a></li>
+                    <li><a href="#">Контакты</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Услуги <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+    </div>
+</section>
+<section class="item">
+    <img class="item-logo" src="" alt=""/>
+
+    <div class="container events">
+        <div class="row">
+            {% for event in event_list %}
+
+                <div class="col-md-4">
+                    {% if forloop.first %}
+                        <div class="section-title">СОБЫТИЯ</div>
+                    {% endif %}
+                    <a href="{{ event.get_absolute_url }}" class="item-link">
+                        <div class="item-title">{{ event.title }}</div>
+                        <div class="item-text">
+                            {% if forloop.first or forloop.last %}
+                                {{ event.short_text|truncatechars:290 }}
+                            {% else %}
+                                {{ event.short_text|truncatechars:510 }}
+                            {% endif %}
+                        </div>
+                    </a>
+                    {% if forloop.last %}
+                        <div class="top70"></div>
+                        <div class="read-more">
+                            <a href="#">Узнать больше</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+    <hr class="section"/>
+</section>
+<section class="works">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="section-title">Работы</div>
+            </div>
+            <div class="col-md-8"><p class="section-text">Наше агентство специализируется на размещении и
+                изготовлениинаружной рекламы,
+                сувенирной продукции, изготовленииимиджевых конструкций и дизайне.</p>
+            </div>
+
+        </div>
+        <div class="row">
+            {% for work in work_list %}
+                <div class="item">
+                    {% thumbnail work.image '293x293' crop='center' as im %}
+                        <img src="{{ im.url }}" alt="{{ work.title }}"/>
+                    {% endthumbnail %}
+                    <div class="hover">
+                        <p class="title">{{ work.name }}</p>
+                        <hr/>
+                        <p class="text">{{ work.short_text }}</p>
+                    </div>
+
+                </div>
+            {% endfor %}
+            <div class="item">
+                <div class="read-more"><a href="#">Увидеть больше</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+{% for service in service_list %}
+    <section class="service">
+        {% if service.image %}
+            <img class="item-logo" src="{{ MEDIA_URL }}{{ service.image }}" alt=""/>
+        {% else %}
+            <hr class="section"/>
+        {% endif %}
+        <div class="container">
+            <div class="col-md-4">
+                <div class="section-title">{{ service.name }}</div>
+
+                <div class="read-more"><a href="#">Увидеть больше</a></div>
+            </div>
+            <div class="col-md-8 section-text">
+                {% if service.short_text %}
+                    <p class="section-text">{{ service.short_text }}</p>
+                {% endif %}
+                {{ service.text|safe }}
+            </div>
+        </div>
+    </section>
+{% endfor %}
+
+<section id="contact">
+    {% if service.image %}
+        <img class="item-logo" src="{{ MEDIA_URL }}{{ service.image }}" alt=""/>
+    {% else %}
+        <hr class="section"/>
+    {% endif %}
+    <div class="container">
+        <div class="col-md-4">
+            <div class="section-title">Контакты</div>
+        </div>
+        <div class="col-md-8">
+            <div class="section-text">
+                {{ contact_text.content|safe }}
+            </div>
+            <div class="contact-text">
+                {{ contact_address.content|safe }}
+            </div>
+            <div class="contact-form">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <div class="form-item">
+                        {{ form.name.label_tag }}
+                        {{ form.name }}
+                    </div>
+                    <div class="form-item ">
+                        {{ form.phone.label_tag }}
+                        {{ form.phone }}
+                    </div>
+                    <div class="form-item ">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                    </div>
+                    <div class="form-item">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                    </div>
+                    <div class="form-item">
+                        {{ form.comment.label_tag }}
+                        {{ form.comment }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- javascript
+   ================================================== -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/scrollTo/jquery.scrollTo.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/project.js' %}"></script>
+</body>
+</html>
+
+

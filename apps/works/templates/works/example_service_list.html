@@ -1,0 +1,17 @@
+{% load pagination_ttags %}
+{% load thumbnail %}
+
+{% for work in object_list %}
+    <div class="block-work-item" href="{{ work.get_absolute_url }}">
+        {% thumbnail work.image '293x293' crop='center' as im %}
+            <img src="{{ im.url }}" alt="{{ work.title }}" height="{{ im.height }}"
+                 width="{{ im.width }}"/>
+        {% endthumbnail %}
+        <div class="block-work-description">
+            <p>{{ work.name }}</p>
+            <hr/>
+            <p>{{ work.short_text }}</p>
+        </div>
+    </div>
+{% endfor %}
+{% show_pagination %}

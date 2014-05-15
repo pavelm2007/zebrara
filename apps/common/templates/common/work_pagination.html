@@ -1,0 +1,7 @@
+{% if work_is_paginated %}
+    {% if work_page_obj.has_next %}
+        <div class="paginator-item-work block-work-last work-link-paginator">
+            <div class="url-work-next" href="{% url 'works:index' %}?work_page={{ work_page_obj.next_page_number }}{{ getvars }}">Увидеть больше</div>
+        </div>
+    {% endif %}
+{% endif %}
